@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./User');
 
@@ -8,8 +8,8 @@ const User = require('./User');
 router.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ username, password: hashedPassword });
+        //const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({ username, password: password });
         await user.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
@@ -25,7 +25,12 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = true;
+        if(password != user.password)
+            {
+                isMatch = false;
+            } 
+        //const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
